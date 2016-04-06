@@ -25,9 +25,9 @@ def upload_file(class_id, assign_id, file_name):
     # `auth_session` is not used here because all authentication is in params
     try:
         data = OrderedDict(response.json()['upload_params'])
-        data['file'] = ''.join(['@', file_name])
+        # data['file'] = open(file_name, 'rb')
         url = response.json()['upload_url']
-        response = requests.post(url, data=data, files={file_name: open(file_name, 'rb')})
+        response = requests.post(url, data=data, files={'file': open(file_name, 'rb')})
         response.raise_for_status()
     finally:
         response.close()

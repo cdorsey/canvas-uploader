@@ -5,38 +5,35 @@ import requests
 
 import config
 
+# Create module-wide authenticated session
+auth_session = requests.Session()
+auth_session.headers = {'Authorization': 'Bearer {0}'.format(config.auth_token)}
+
 
 def get_course():
-    s = requests.Session()
-    s.headers = {'Authorization': 'Bearer {0}'.format(config.auth_token)}
     try:
-        response = s.get('https://bgsu.instructure.com/api/v1/courses').json()
+        response = auth_session.get(''.join([config.domain, '/api/v1/courses']))
     finally:
-        s.close()
+        auth_session.close()
 
-    for i in range(len(response)):
-        print("[{0}] {1}".format(i + 1, response[i]['name']))
+    for i in range(len(response.json())):
+        print("[{0}] {1}".format(i + 1, response.json()[i]['name']))
 
     selection = int(input("Select Course: ")) - 1
 
-    return response[selection]['id']
+    return response.json()[selection]['id']
 
 
 def get_assignment(class_id):
-    s = requests.Session()
-    s.headers = {'Authorization': 'Bearer {0}'.format(config.auth_token)}
-    url = 'https://bgsu.instructure.com/api/v1/courses/{0}/assignments'.format(class_id)
+    url = ''.join([config.domain, '/api/v1/courses/{0}/assignments'.format(class_id)])
     # params = {'bucket': 'upcoming'}
     params = {'per_page': 30}
     try:
-        response = s.get(url, params=params).json()
+        response = auth_session.get(url, params=params)
     finally:
-        s.close()
+        auth_session.close()
 
-    # print(response[0].keys())
-
-    assignments = list(filter(lambda a: 'online_upload' in a['submission_types'], response))
-    # assignments = response
+    assignments = list(filter(lambda a: 'online_upload' in a['submission_types'], response.json()))
 
     print()
     for i in range(len(assignments)):
