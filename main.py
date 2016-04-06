@@ -1,5 +1,5 @@
 import UploadFile
-import UserInterface_mock as UserInterface
+import UserInterface
 
 if __name__ == '__main__':
     class_id = UserInterface.get_course()
@@ -7,3 +7,5 @@ if __name__ == '__main__':
     file_name = UserInterface.get_file()
 
     UploadFile.upload_file(class_id, assign_id, file_name)
+
+    print("\nAssignment submitted.")

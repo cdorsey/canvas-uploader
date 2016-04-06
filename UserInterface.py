@@ -3,12 +3,12 @@ from os.path import isfile
 
 import requests
 
-auth = os.environ.get('AUTH_KEY')
+import config
 
 
 def get_course():
     s = requests.Session()
-    s.headers = {'Authorization': 'Bearer {0}'.format(auth)}
+    s.headers = {'Authorization': 'Bearer {0}'.format(config.auth_token)}
     try:
         response = s.get('https://bgsu.instructure.com/api/v1/courses').json()
     finally:
@@ -24,7 +24,7 @@ def get_course():
 
 def get_assignment(class_id):
     s = requests.Session()
-    s.headers = {'Authorization': 'Bearer {0}'.format(auth)}
+    s.headers = {'Authorization': 'Bearer {0}'.format(config.auth_token)}
     url = 'https://bgsu.instructure.com/api/v1/courses/{0}/assignments'.format(class_id)
     # params = {'bucket': 'upcoming'}
     params = {'per_page': 30}
