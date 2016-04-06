@@ -26,8 +26,7 @@ def get_course():
 
 def get_assignment(class_id):
     url = ''.join([config.domain, '/api/v1/courses/{0}/assignments'.format(class_id)])
-    # params = {'bucket': 'upcoming'}
-    params = {'per_page': 30}
+    params = {'bucket': 'upcoming'}
     try:
         response = auth_session.get(url, params=params)
     finally:
