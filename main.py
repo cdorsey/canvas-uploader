@@ -1,5 +1,5 @@
 import UploadFile
-import UserInterface
+import UserInterface_mock as UserInterface
 
 if __name__ == '__main__':
     class_id = UserInterface.get_course()

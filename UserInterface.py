@@ -1,6 +1,5 @@
-import json
 import os
-from os.path import isfile, join
+from os.path import isfile
 
 import requests
 
@@ -10,28 +9,34 @@ auth = os.environ.get('AUTH_KEY')
 def get_course():
     s = requests.Session()
     s.headers = {'Authorization': 'Bearer {0}'.format(auth)}
-    r = json.loads(s.get('https://bgsu.instructure.com/api/v1/courses').text)
-    s.close()
+    try:
+        response = s.get('https://bgsu.instructure.com/api/v1/courses').json()
+    finally:
+        s.close()
 
-    for i in range(len(r)):
-        print("[{0}] {1}".format(i + 1, r[i]['name']))
+    for i in range(len(response)):
+        print("[{0}] {1}".format(i + 1, response[i]['name']))
 
     selection = int(input("Select Course: ")) - 1
 
-    return r[selection]['id']
+    return response[selection]['id']
 
 
 def get_assignment(class_id):
     s = requests.Session()
     s.headers = {'Authorization': 'Bearer {0}'.format(auth)}
     url = 'https://bgsu.instructure.com/api/v1/courses/{0}/assignments'.format(class_id)
-    params = {'bucket': 'upcoming'}
-    response = json.loads(s.get(url, params=params).text)
-    s.close()
+    # params = {'bucket': 'upcoming'}
+    params = {'per_page': 30}
+    try:
+        response = s.get(url, params=params).json()
+    finally:
+        s.close()
 
     # print(response[0].keys())
 
     assignments = list(filter(lambda a: 'online_upload' in a['submission_types'], response))
+    # assignments = response
 
     print()
     for i in range(len(assignments)):
