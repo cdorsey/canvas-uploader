@@ -1,9 +1,13 @@
 import os
+import sys
 from os.path import isfile
 
 import requests
 
-import config
+try:
+    import config
+except ImportError:
+    sys.exit("Unable to load configuration file. See README for more information")
 
 # Create module-wide authenticated session
 auth_session = requests.Session()
@@ -44,7 +48,7 @@ def get_assignment(class_id):
 
 
 def get_file():
-    files = list(filter(lambda f: isfile(f), os.listdir('.')))
+    files = list(filter(isfile, os.listdir('.')))
 
     print()
     for i in range(len(files)):
